@@ -1,21 +1,25 @@
 # The code will be released soon
 
 # Data
- 
 ## Dataset Directory Structure
- 
+
 The structure of directory `./dataset` should be:
  
     dataset
     ├── coco
-    │   ├── caption.mat
-    │   ├── index.mat
-    │   └── label.mat
+    │   ├── query.pkl
+    │   ├── train.pkl
+    │   └── retrieval.pkl
     ├── flickr25k
-    │   ├── caption.mat
-    │   ├── index.mat
-    │   └── label.mat
+    │   ├── query.pkl
+    │   ├── train.pkl
+    │   └── retrieval.pkl
     └── nuswide
-        ├── caption.mat
-        ├── index.mat
-        └── label.mat
+        ├── query.pkl
+        ├── train.pkl
+        └── retrieval.pkl
+## Dataset
+We release the NUS-WIDE experimental datasets as follows:
+train:https://drive.google.com/uc?export=download&id=1lVPMF0Wc7gcnv-vbVZZNYmRBJtJYhpg_
+query:https://drive.google.com/uc?export=download&id=1OZzgLY56vVkkO_Z-BikUeDQD1x4CIPnv
+retrieval:https://drive.google.com/uc?export=download&id=1LxlegoqDGaeYK1TcGXXJSa7_ZnLeb1iN
