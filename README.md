@@ -5,8 +5,8 @@
 
 The structure of directory `./dataset` should be:
  
-    dataset
-    ├── coco
+    data
+    ├── mscoco
     │   ├── query.pkl
     │   ├── train.pkl
     │   └── retrieval.pkl
@@ -14,7 +14,7 @@ The structure of directory `./dataset` should be:
     │   ├── query.pkl
     │   ├── train.pkl
     │   └── retrieval.pkl
-    └── nuswide
+    └── nus-wide
         ├── query.pkl
         ├── train.pkl
         └── retrieval.pkl
