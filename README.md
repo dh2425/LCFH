@@ -1,5 +1,3 @@
-# The code will be released soon
-
 # Data
 ## Dataset Directory Structure
 
