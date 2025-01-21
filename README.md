@@ -1,7 +1,7 @@
 # Data
 ## Dataset Directory Structure
 
-The structure of directory `./dataset` should be:
+The structure of directory `./data` should be:
  
     data
     ├── mscoco
