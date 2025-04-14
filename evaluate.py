@@ -24,6 +24,8 @@ def calc_map_k(qB, rB, query_L, retrieval_L, k=None):
 
     # print('hamm ', hamm.shape)
     map = 0
+
+    k=None
     if k is None:
         k = retrieval_L.shape[0]
     for iter in range(num_query):
