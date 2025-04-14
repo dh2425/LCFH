@@ -1,26 +1,24 @@
 import os
-
 from torch.utils.data.dataset import Dataset
 import pickle
 from torch.utils.data import DataLoader
 import torch
 
 class CustomDataSet(Dataset):
-    def __init__(self, images, texts, labs,tags=None,tags_len=None):
+    def __init__(self, images, texts, labs,tags=None):
         self.images = images
         self.texts = texts
         self.labs = labs
         self.tags = tags
-        self.tags_len=tags_len
+
    
     def __getitem__(self, index):
         img = self.images[index]
         text = self.texts[index]
         lab = self.labs[index]
-        if self.tags is not None and self.tags_len is not None:
+        if self.tags is not None :
             tags=self.tags[index]
-            tags_len = self.tags_len[index]
-            return img, text, lab, index, tags, tags_len
+            return img, text, lab, index, tags
         else:
             return img, text, lab, index
 
@@ -41,14 +39,12 @@ def load_dataset(dataset,data_pth, batch_size):
 
 
 
-
     with open(train_loc, 'rb') as f_pkl:
         data = pickle.load(f_pkl)
         train_labels = torch.tensor(data['label'],dtype=torch.int64)
         train_texts = torch.tensor(data['text'], dtype=torch.float32)
         train_images = torch.tensor(data['image'], dtype=torch.float32)
-        train_tags = torch.tensor(data['tag'], dtype=torch.float32)
-        train_tags_len = torch.tensor(data['tag_len'], dtype=torch.float32)
+        train_tags = torch.tensor(data['tag_one_hot'], dtype=torch.float32)
 
     with open(query_loc, 'rb') as f_pkl:
         data = pickle.load(f_pkl)
@@ -62,20 +58,14 @@ def load_dataset(dataset,data_pth, batch_size):
         retrieval_texts = torch.tensor(data['text'], dtype=torch.float32)
         retrieval_images = torch.tensor(data['image'], dtype=torch.float32)
 
-    imgs = {'train': train_images, 'query': query_images, 'retrieval': retrieval_images}
-    texts = {'train': train_texts,  'query': query_texts, 'retrieval': retrieval_texts}
-    labs = {'train': train_labels, 'query': query_labels, 'retrieval': retrieval_lables}
-    tags= {'train': train_tags}
-    tags_len={'train': train_tags_len}
+    dataset_train =CustomDataSet(images=train_images, texts=train_texts, labs=train_labels, tags=train_tags)
+    dataset_query = CustomDataSet(images=query_images, texts=query_texts, labs=query_labels)
+    dataset_retrival = CustomDataSet(images=retrieval_images, texts=retrieval_texts, labs=retrieval_lables)
+
+    dataloader_train = DataLoader(dataset_train, batch_size=batch_size, drop_last=True, pin_memory=True,shuffle=True, num_workers=4)
+    dataloader_query = DataLoader(dataset_query, batch_size=batch_size,  drop_last=True, pin_memory=True, shuffle=False, num_workers=4)
+    dataloader_retrival = DataLoader(dataset_retrival, batch_size=batch_size, drop_last=True, pin_memory=True, shuffle=False,num_workers=4)
 
 
-    dataset_train = {x: CustomDataSet(images=imgs[x], texts=texts[x], labs=labs[x],tags=tags[x],tags_len=tags_len[x]) for x in ['train']}
-    dataset_query_retrival = {x: CustomDataSet(images=imgs[x], texts=texts[x], labs=labs[x]) for x in ['query', 'retrieval']}
-
-
-    dataloader_train = DataLoader(dataset_train['train'], batch_size=batch_size, drop_last=True, pin_memory=True,shuffle=True, num_workers=4)
-    dataloader_query_retrival = {x:DataLoader(dataset_query_retrival[x], batch_size=batch_size, drop_last=True, pin_memory=True, shuffle=False, num_workers=4) for x in [ 'query', 'retrieval']}
-
-
-    return dataloader_train ,dataloader_query_retrival
+    return dataloader_train ,dataloader_query,dataloader_retrival
 

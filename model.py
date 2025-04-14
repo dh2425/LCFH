@@ -3,7 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.init as init
-
+from scipy.ndimage import gaussian_filter
+import numpy as np
 
 class ImgNet(nn.Module):
     def __init__(self, img_feat_len,code_len):
@@ -47,7 +48,7 @@ class TxtNet(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         torch.nn.init.normal(self.fc_encode.weight, mean=0.0, std=0.3)
 
-        self.init_weights()
+        # self.init_weights()   #coco时屏蔽掉  25k nus时保留
     def init_weights(self):
 
         init.xavier_normal_(self.fc1.weight)
@@ -66,39 +67,48 @@ class TxtNet(nn.Module):
 
     def set_alpha(self, epoch):
         self.alpha = math.pow((1.0 * epoch + 1.0), 0.5)
-
+#
 def cal_similarityTag(config,img,txt,tag,knn_number = 3500,scale = 4000,a2 = 0.7):
 
-    img_F = F.normalize(img, dim=-1)
-    tags_F = F.normalize(tag, dim=-1)
-
-
-    cosine_similarity = torch.bmm(img_F.unsqueeze(1), tags_F.transpose(1, 2)).squeeze(1)
-
-    bool_greater_than_threshold = cosine_similarity > config.tag_threshold
-
-
-    _, max_indices = cosine_similarity.max(dim=1)
-    bool_max_values = torch.zeros_like(cosine_similarity, dtype=torch.bool)
-    bool_max_values.scatter_(1, max_indices.unsqueeze(1), True)
-
-    bool_mask = bool_greater_than_threshold | bool_max_values
-    mask = bool_mask.unsqueeze(-1).expand_as(tags_F)
-    tags_mask = tag * mask
-    tags_sum = tags_mask.sum(dim=1)
-    is_true = torch.sum(bool_mask, dim=1)
-    weights = is_true.unsqueeze(1).expand_as(tags_sum)
-    tags_weights = tags_sum / weights
-
-    F_tag= F.normalize(tags_weights, dim=-1)
     F_I = F.normalize(img)
     F_T = F.normalize(txt)
 
-    S_tag=F_tag.mm(F_tag.t())
+    sim=tag.mm(tag.t())
+    S_tag=1/(1+torch.exp(-sim))
+    S_tag=S_tag * 2 - 1
+
+
     S_I = F_I.mm(F_I.t())
     S_T= F_T.mm(F_T.t())
 
-    pro =  S_tag*config.lamda1+ S_I*config.lamda2+ S_T*config.lamda3
+
+    S_img_txt=S_I*config.lamda1+ S_T*(1-config.lamda1)
+
+
+    bs =S_img_txt.size(0)
+
+    mask = torch.tril(torch.ones(bs, bs, dtype=torch.bool), diagonal=-1)
+    non_diag_elements = S_img_txt[mask]
+
+    mean_value = non_diag_elements.mean().item()
+    std_value = non_diag_elements.std().item()
+
+    left =  mean_value -std_value*config.L1
+    right = mean_value +std_value*config.L2
+
+    S_1=S_img_txt.clone()
+    S_2=S_tag.clone()
+
+    condition1 =(S_2 ==0 )& (S_1 > left)
+    S_tag[condition1] = S_1[condition1] * config.α2
+
+    condition2 = (S_1 < right) & (S_1 > left)
+    S_img_txt[condition2]=config.α2 * S_2[condition2] * S_img_txt[condition2]
+
+    S_img_txt[(S_2 == 0) & (S_1 < left )] = 0
+    S_img_txt[(S_2 > 0) & (S_1 > right)] = 1
+
+    pro = S_tag*config.lamda2+  S_img_txt*(1-config.lamda2)
 
     size = img.size(0)
     top_size = knn_number
@@ -112,5 +122,15 @@ def cal_similarityTag(config,img,txt,tag,knn_number = 3500,scale = 4000,a2 = 0.7
     S = pro_dis * a2
     S = S * 2.0 - 1
 
-    return S
+    return S, S_1, S_2
 
+
+def High_sample(S_s,S_t,config):
+
+    delta = (S_s - S_t).abs()
+
+    A = 1 + torch.exp(-delta) * config.gamma
+
+    W = torch.where(delta < config.epsilon, A, 1.0)
+
+    return W
