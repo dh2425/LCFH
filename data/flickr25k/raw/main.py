@@ -54,15 +54,15 @@ def save_dataset(data_type, img_data, txt_data, label_data):
     os.makedirs(data_type, exist_ok=True)
 
     # 保存图片路径
-    with open(join(data_type, 'images.raw'), 'w', encoding='utf-8') as f:
+    with open(join(data_type, 'images.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(img_data))
 
     # 保存文本数据
-    with open(join(data_type, 'texts.raw'), 'w', encoding='utf-8') as f:
+    with open(join(data_type, 'texts.txt'), 'w', encoding='utf-8') as f:
         f.write('\n'.join(txt_data))
 
     # 保存标签数据
-    with open(join(data_type, 'labels.raw'), 'w', encoding='utf-8') as f:
+    with open(join(data_type, 'labels.txt'), 'w', encoding='utf-8') as f:
         for label in label_data:
             f.write(' '.join(map(str, label)))  # 将numpy数组转为字符串
             f.write('\n')
