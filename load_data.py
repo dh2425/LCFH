@@ -39,12 +39,17 @@ def load_dataset(dataset,data_pth, batch_size):
 
 
 
+
+
+
+
     with open(train_loc, 'rb') as f_pkl:
         data = pickle.load(f_pkl)
         train_labels = torch.tensor(data['label'],dtype=torch.int64)
         train_texts = torch.tensor(data['text'], dtype=torch.float32)
         train_images = torch.tensor(data['image'], dtype=torch.float32)
         train_tags = torch.tensor(data['tag_one_hot'], dtype=torch.float32)
+        # train_tags = torch.tensor(data['label_g'], dtype=torch.int64)
 
     with open(query_loc, 'rb') as f_pkl:
         data = pickle.load(f_pkl)
@@ -58,13 +63,19 @@ def load_dataset(dataset,data_pth, batch_size):
         retrieval_texts = torch.tensor(data['text'], dtype=torch.float32)
         retrieval_images = torch.tensor(data['image'], dtype=torch.float32)
 
+
+
+
+
+
+
     dataset_train =CustomDataSet(images=train_images, texts=train_texts, labs=train_labels, tags=train_tags)
     dataset_query = CustomDataSet(images=query_images, texts=query_texts, labs=query_labels)
     dataset_retrival = CustomDataSet(images=retrieval_images, texts=retrieval_texts, labs=retrieval_lables)
 
-    dataloader_train = DataLoader(dataset_train, batch_size=batch_size, drop_last=True, pin_memory=True,shuffle=True, num_workers=4)
-    dataloader_query = DataLoader(dataset_query, batch_size=batch_size,  drop_last=True, pin_memory=True, shuffle=False, num_workers=4)
-    dataloader_retrival = DataLoader(dataset_retrival, batch_size=batch_size, drop_last=True, pin_memory=True, shuffle=False,num_workers=4)
+    dataloader_train = DataLoader(dataset_train, batch_size=batch_size, drop_last=True, pin_memory=True,shuffle=True)
+    dataloader_query = DataLoader(dataset_query, batch_size=batch_size,  drop_last=True, pin_memory=True, shuffle=False)
+    dataloader_retrival = DataLoader(dataset_retrival, batch_size=batch_size, drop_last=True, pin_memory=True, shuffle=False)
 
 
     return dataloader_train ,dataloader_query,dataloader_retrival
