@@ -12,7 +12,7 @@ After downloading, please extract the data to the `data/` folder in the project 
 
 ```
 data/                    # Root data directory  
-└── data_name/           # Specific dataset name (e.g., coco/ or custom name)  
+└── data_name/           # Specific dataset name  
     └── raw/             # Raw data directory  
         ├── all/         # Global files  
         │   └── image.txt  # Image path list file (one path per line)  
