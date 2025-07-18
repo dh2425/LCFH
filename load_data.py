@@ -48,8 +48,7 @@ def load_dataset(dataset,data_pth, batch_size):
         train_labels = torch.tensor(data['label'],dtype=torch.int64)
         train_texts = torch.tensor(data['text'], dtype=torch.float32)
         train_images = torch.tensor(data['image'], dtype=torch.float32)
-        train_tags = torch.tensor(data['tag_one_hot'], dtype=torch.float32)
-        # train_tags = torch.tensor(data['label_g'], dtype=torch.int64)
+        train_tags = torch.tensor(data['label_g'], dtype=torch.int64)
 
     with open(query_loc, 'rb') as f_pkl:
         data = pickle.load(f_pkl)
