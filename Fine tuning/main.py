@@ -168,16 +168,13 @@ def main(pretrained_modal_pth,source_name,json_file,source_images, target_name,t
 
 
 
-        if epoch>=0:
-          # 每轮训练后生成描述
-            print(f"Generating captions after epoch {epoch}...")
-            generate_captions(
+        generate_captions(
                 model=model,
                 processor=processor,
                 image_file=target_images,
                 image_dir=target_images_dir,
                 output_file=f"output\generated_S({source_name})_T({target_name})_epoch_{epoch}.source_labels"
-            )
+        )
 
 
 
