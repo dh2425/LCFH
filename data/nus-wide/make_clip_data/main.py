@@ -36,7 +36,7 @@ train_img_path = '../raw/train/images.txt'
 train_lab_path = '../raw/train/labels.txt'
 train_txt_path = '../raw/train/texts.txt'
 # train_generate_tags_path= "../from_generate_makePkl/generated_captions_epoch_4.source_labels"
-train_generate_tags_path= "../../../Fine tuning/generated_captions_epoch_4.json"
+train_generate_tags_path= "../../../Fine tuning/generated_Snuswide_Tflickr25k.json"
 
 query_img_path = '../raw/query/images.txt'
 query_lab_path = '../raw/query/labels.txt'
