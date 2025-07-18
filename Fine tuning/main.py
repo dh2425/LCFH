@@ -173,7 +173,7 @@ def main(pretrained_modal_pth,source_name,json_file,source_images, target_name,t
             processor=processor,
             image_file=target_images,
             image_dir=target_images_dir,
-            output_file=f"output\generated_S({source_name})_T({target_name})_.json"
+            output_file=f"generated_S({source_name})_T({target_name}).json"
     )
 
 
