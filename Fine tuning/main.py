@@ -168,13 +168,13 @@ def main(pretrained_modal_pth,source_name,json_file,source_images, target_name,t
 
 
 
-        generate_captions(
-                model=model,
-                processor=processor,
-                image_file=target_images,
-                image_dir=target_images_dir,
-                output_file=f"output\generated_S({source_name})_T({target_name})_epoch_{epoch}.source_labels"
-        )
+    generate_captions(
+            model=model,
+            processor=processor,
+            image_file=target_images,
+            image_dir=target_images_dir,
+            output_file=f"output\generated_S({source_name})_T({target_name})_source_labels"
+    )
 
 
 
