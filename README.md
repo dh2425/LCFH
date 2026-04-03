@@ -1,6 +1,6 @@
 # LCFH 
-![fine-tuning](https://github.com/dh2425/LCFH/raw/main/images/fine-tuning.png)
-![frame](https://github.com/dh2425/LCFH/raw/main/images/frame.png)
+<img src="https://github.com/dh2425/LCFH/raw/main/images/fine-tuning.png" width="600" alt="fine-tuning">
+<img src="https://github.com/dh2425/LCFH/raw/main/images/frame.png" width="600" alt="frame">
 ### Dataset  
 The experimental data used in the paper can be downloaded at:  
 **Baidu Netdisk**  
