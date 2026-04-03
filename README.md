@@ -1,9 +1,6 @@
-# LCFH  The code is being organized
-
+# LCFH 
+![fine-tuning](https://github.com/dh2425/LCFH/raw/main/images/fine-tuning.png)
 ![frame](https://github.com/dh2425/LCFH/raw/main/images/frame.png)
-
-
-
 ### Dataset  
 The experimental data used in the paper can be downloaded at:  
 **Baidu Netdisk**  
